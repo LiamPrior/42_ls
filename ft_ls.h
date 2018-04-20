@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:38:34 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/19 13:40:57 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/20 10:20:16 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,6 @@ void    ft_init(t_env *all, int argc);
 void    ft_parse_paths(int argc, char **argv, t_env *all);
 t_info   *ft_ls(t_env *all, t_info *info, char *path);
 t_info  *ft_create_node(t_info *info, char *path, struct dirent *file);
+DIR     *ft_type(t_env *all, DIR *type, char *path);
 
 #endif
