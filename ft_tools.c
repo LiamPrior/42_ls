@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/17 13:29:55 by psprawka          #+#    #+#             */
-/*   Updated: 2018/04/19 13:41:07 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/20 13:42:51 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void    ft_init(t_env *all, int argc)
     all->info->path = NULL;
     all->info->name = NULL;
     all->paths = (char **)malloc(sizeof(char *) * argc);
-    all->run = true;
+    // all->run = true;
     all->i = 0;
     all->x = 0;
     all->px = 0;

@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:38:34 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/20 10:20:16 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/20 13:41:20 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ typedef struct  s_env
     int         px;
     int         x;
     int         i;
-    bool        run;
+    // bool        run;
 }               t_env;
 
 void    ft_toggle_options(int argc, char **argv, t_env *all);

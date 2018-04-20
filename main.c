@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:37:47 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/20 10:58:07 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/20 13:49:20 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,19 @@ DIR     *ft_type(t_env *all, DIR *type, char *path)
         all->paths[all->px] = ft_strnew(1);
         all->paths[all->px][0] = '.';
     }
-    if (all->paths[all->px] && path == NULL)//all->run == true)
+    if (all->paths[all->px] && path == NULL)
     {
+        printf("path1 = [%s]\n", all->paths[all->px]);
         if ((type = opendir(all->paths[all->px])) == NULL)//remembere files for 1
             ft_error(1, all->paths[all->px]);
-        // all->run = false;
     }
     else
     {
+        printf("path2 = [%s][%d]\n", path, S_ISDIR(data.st_mode));
         lstat(path, &data);
-        if (S_ISDIR(data.st_mode) && (type = opendir(path)) == NULL)//make sure that path is correct!!
+        if(!(S_ISDIR(data.st_mode)))
+            type = opendir(all->paths[all->px]);
+        else if (S_ISDIR(data.st_mode) && (type = opendir(path)) == NULL)//make sure that path is correct!!
             ft_error(1, path);
     }
     return (type);
@@ -45,26 +48,31 @@ t_info *ft_ls(t_env *all, t_info *info, char *path)
     struct dirent   *file;
     struct stat     data;
 
+    printf("segers1\n");
+    sleep(1);
     type = ft_type(all, type, path);
+    printf("segers2\n");
     while ((file = readdir(type)) != NULL)
     {
+        printf("segers3\n");
         if (path == NULL)
             path = ft_strdup(all->paths[all->px]);
         path = ft_strjoin2(path, file->d_name);
-        printf("paht = [%s]\n", path);
+        // printf("paht = [%s]\n", path);
         info = ft_create_node(info, path, file);
         lstat(path, &data);
         if (S_ISDIR(data.st_mode) && all->options.R == true && ft_strncmp(file->d_name, "..", 1) != 0)
         {
-            printf("recursion: path= [%s]\n", info->path);
-            all->run = false;
-            info->sub = ft_ls(all, info->sub, info->path);
+            // printf("recursion: path= [%s]\n", info->path);
+            all->paths[all->px] = path;
+            info->sub = ft_ls(all, info->sub, all->paths[all->px]);//msy just ened to change what im passing here
         }
         else
             info->sub = NULL;
-        if (all->run == true)
-            path = all->paths[all->px];
+        printf("segers4\n");
+        path = all->paths[all->px];
     }
+    printf("segers5\n");
     closedir(type);
     while (info->prev != NULL)
         info = info->prev;
