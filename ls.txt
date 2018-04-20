@@ -1,0 +1,154 @@
+uint8_t is eqivalent to an unsigned char caps at 255.
+first i neeed to parse the options they pass in. : -l: &longlist, -R: &recursive, -a &all, -r: reverse, and -t, &modtime!
+
+ls -l, show hiden file/dir. include permission, amount of files, who created it, when it was made, the size of the dir/file, munth day time, then thte dir/file name!
+
+ls -R: shows everything in perent dir like ls, then leaves one gap and traverses through alphanumerically, shows dir like ./dir/file: (dir content) then everything in tha
+dir then leaves another gap and continues down its path until no more dirs ande ther it recurses back to the dir that had two dirs in it. continues this process.
+
+ls -a, shows (.) for currect dir, 7 spaces forward it shows (..), then all hidden files, then number file/dirs, then lists all dirs and files alphanumerically
+
+ls -r, doesnt show hidden files, simply reverses the order it displays ls.
+
+ls -t simply dispalys them newest - oldest.
+
+i have to be able to handle options togethor! once one flag is found if a second is found it just traverses over it!
+If more than one operand is given, non-directory operands are displayed first; directory and non-directory operands are sorted separately and in lexicographical order
+those are all options given. The first thing i should handle is traversing through dirs recursivly
+!!!!!ALL COMMANDS!!!!!!!!!!ALL COMMANDS!!!!!!!!!!ALL COMMANDS!!!!!!!!!!ALL COMMANDS!!!!!!!!!!ALL COMMANDS!!!!!!!!!!ALL COMMANDS!!!!!!!!!!ALL COMMANDS!!!!!!!!!!ALL COMMANDS!!!!!
+
+◦ write
+◦ opendir
+◦ readdir
+◦ closedir
+◦ stat
+◦ lstat
+◦ getpwuid
+◦ getgrgid
+◦ listxattr
+◦ getxattr
+◦ time
+◦ ctime
+◦ readlink
+◦ malloc
+◦ free
+◦ perror
+◦ strerror
+◦ exit
+
+/////////////
+1:so after i parse options(-l, -r, -R, -a, t) i need to decide the order that im going to execute them. Ill do this today√
+2:
+\\\\\\\\\\\\\
+
+!!!!!!!!!!PARSE PROCESS!!!!!!!!!!!!!!!!!!!PARSE PROCESS!!!!!!!!!!!!!!!!!!!PARSE PROCESS!!!!!!!!!!!!!!!!!!!PARSE PROCESS!!!!!!!!!!!!!!!!!!!PARSE PROCESS!!!!!!!!!
+
+so the function is called like so ./ft_ls -options;
+everything is going to be in argv[1] thank god!
+so i need to toggle the flags, after they are toggle i need to check which ones have been toggled, if none have been toggled then just call normal ls on the specified path.
+How should i check wich ones have been toggled. i could just go through and check which ones have been called, the only thing i have to watch out for with precedence is ........
+r and t. if t is specified it takes precedence over ls but then if r is also specified with t then order them by time and simply reverse it!
+
+!!!!!!!!!ALL OPTIONS!!!!!!!!!!ALL OPTIONS!!!!!!!!!!ALL OPTIONS!!!!!!!!!!ALL OPTIONS!!!!!!!!!!ALL OPTIONS!!!!!!!!!!ALL OPTIONS!!!!!!!!!!ALL OPTIONS!!!!!!!!!!ALL OPTIONS!!!!!!!!
+
+1: ls: Displays everything in directory alphanumerically!
+1: ls:
+1: ls:
+
+2: -l: num of 512 bytes, PERM, NUM DIRS/links, owner, group, bytes in file/dir (size), abbreviatd month, day file was modified, hour file modified, minute file modified, pathname.
+2: -l: number of 512 bytes:
+2: -l: PERMS:
+2: -l: TOTAL LINKS:
+2: -l: OWNER:
+2: -l: GROUP:
+2: -l: SIZE:
+2: -l: MONTH:
+2: -l: DAY:
+2: -l: HOUR:
+2: -l: MINUTE:
+2: -l: PATHNAME:
+
+3: -R: Recursively list subdirectories encountered.
+3: -R: This litterally shows absolutly everything.
+3: -R: #inlcude <dirent.h>
+3: -R: opendir to open go into dir, readdir reads the dir and returns null onces it reached the end, closedir closes the dir stream and frees the the structure pointer. 
+
+
+
+
+4: -a: Include directory entries whose names begin with a dot (.) 
+4: -a: If flag is called then search for a (.) infront of dir/file!
+4: -a:
+
+5: -r: Reverse the order of the sort to get reverse lexicographical order or the oldest entries first.
+5: -r:
+
+6: -t: Sort by time modified! Most recent comes first!
+6: -t:
+
+i need to be able to list files and dirs in lexigraphical order.
+i need to be able to get the permissions
+i need to be able to count the amount of directoies that are affilated with it: perms: (number).
+i need to be able to 
+
+-----------------------------------struct dirent---------------------------
+
+#include <dirent.h>
+
+** struct dirent {
+**      ino_t            d_ino;           Inode number
+**      off_t            d_off;           Not an offset; see below
+**      unsigned short    d_reclen;        Length of this record
+**      unsigned char     d_type;          Type of file
+**        char            d_name[256];     Null-terminated filename
+
+**    -> S_ISREG(mode)        regular file
+**    -> S_ISDIR(mode)            catalog
+**    -> S_ISCHR(mode)            character device
+**    -> S_ISBLK(mode)            block device
+**    -> S_ISIFO(mode)            FIFO
+**    -> S_ISLNK(mode)            symbolic link
+**    -> S_ISSOCK(mode)            socket
+
+The dirent library includes lots of functions such as opendir, closedir, and readdir.
+
+DIR represents a directory stream!
+ino_t  d_ino       file serial number
+char   d_name[]    name of entry
+
+OPENDIR: DIR *opendir(const char *dirname);
+	   : The opendir() function opens a directory stream corresponding to the directory named by the dirname argument. The directory stream is positioned at the first entry.
+	   : Returns a pointer to an object of type DIR otherwise it reutns null.
+
+CLOSEDIR: int closedir(DIR *dirp);
+		: The closedir() function closes the directory stream referred to by the argument dirp. Upon return, the value of dirp may no longer point to an accessible object of the type DIR.
+        : Upon successful completion, closedir() returns 0. Otherwise, -1 is returned and errno is set to indicate the error.
+
+READDIR: struct dirent *readdir(DIR *dirp);
+       : Returns a pointer to a structure representing the directory entry at the current position in the directory stream specified by the argument dirp
+       : After reading a a dirrectory it will read the next one as well.
+
+-----------------------------struct lstat---------------------------
+
+#include <sys/stat.h>
+
+int lstat(const char *restrict path, struct stat *restrict buf);
+
+stat: stats the file pointed to by path and fills in buf.
+lstat: is identical to stat(), except that if path is a symbolic link, then the link itself is stat-ed, not the file that it refers to.
+
+struct stat {
+    dev_t     st_dev;     /* ID of device containing file */
+    ino_t     st_ino;     /* inode number */
+    mode_t    st_mode;    /* protection */
+    nlink_t   st_nlink;   /* number of hard links */
+    uid_t     st_uid;     /* user ID of owner */
+    gid_t     st_gid;     /* group ID of owner */
+    dev_t     st_rdev;    /* device ID (if special file) */
+    off_t     st_size;    /* total size, in bytes */
+    blksize_t st_blksize; /* blocksize for file system I/O */
+    blkcnt_t  st_blocks;  /* number of 512B blocks allocated */
+    time_t    st_atime;   /* time of last access */
+    time_t    st_mtime;   /* time of last modification */
+    time_t    st_ctime;   /* time of last status change */
+};
