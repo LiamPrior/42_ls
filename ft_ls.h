@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:38:34 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/17 16:59:42 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/19 13:40:57 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct  s_options
 
 typedef struct  s_info
 {
+    char        *name;
     char        *path;
     struct      s_info      *next;
     struct      s_info      *prev;
@@ -52,12 +53,14 @@ typedef struct  s_env
     int         px;
     int         x;
     int         i;
-
+    bool        run;
 }               t_env;
 
 void    ft_toggle_options(int argc, char **argv, t_env *all);
-void    ft_error(int i);
+void    ft_error(int i, char *str);
 void    ft_init(t_env *all, int argc);
 void    ft_parse_paths(int argc, char **argv, t_env *all);
+t_info   *ft_ls(t_env *all, t_info *info, char *path);
+t_info  *ft_create_node(t_info *info, char *path, struct dirent *file);
 
 #endif
