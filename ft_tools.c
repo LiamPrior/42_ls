@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/17 13:29:55 by psprawka          #+#    #+#             */
-/*   Updated: 2018/04/20 13:42:51 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/20 23:29:41 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,12 +99,15 @@ t_info  *ft_create_node(t_info *info, char *path, struct dirent *file)
 {
     t_info *new;
     t_info *cur;
+    int     p;
 
+    p = ft_strlen(path);
     new = (t_info *)malloc(sizeof(t_info));
-    new->path = ft_strnew(ft_strlen(path));
-    new->name = ft_strnew(ft_strlen(file->d_name));
-    ft_strcpy(new->name, file->d_name);
-    ft_strcpy(new->path, path);
+    new->name = ft_strdup(file->d_name);//so this is creating dirty memory some how
+    new->path = ft_strdup(path);
+    new->path[p] = '\0';
+    // printf("new->name = [%s]", new->name);
+    // printf("           new->path = [%s]\n", new->path);
     new->next = NULL;
     new->sub = NULL;
     new->prev = NULL;    

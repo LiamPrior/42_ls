@@ -6,39 +6,34 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:37:47 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/20 13:49:20 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/20 23:30:47 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-
-
-
 DIR     *ft_type(t_env *all, DIR *type, char *path)
 {
-    struct stat     data;
+    struct stat     *data;
 
+    data = (struct stat *)malloc(sizeof(struct stat));
     if (all->px == 0 && all->paths[all->px] == NULL)
     {
         all->paths[all->px] = ft_strnew(1);
         all->paths[all->px][0] = '.';
     }
-    if (all->paths[all->px] && path == NULL)
-    {
-        printf("path1 = [%s]\n", all->paths[all->px]);
-        if ((type = opendir(all->paths[all->px])) == NULL)//remembere files for 1
+    if (all->paths[all->px] && path == NULL 
+        && (type = opendir(all->paths[all->px])) == NULL)
             ft_error(1, all->paths[all->px]);
-    }
     else
     {
-        printf("path2 = [%s][%d]\n", path, S_ISDIR(data.st_mode));
-        lstat(path, &data);
-        if(!(S_ISDIR(data.st_mode)))
+        lstat(path, data);
+        if(S_ISDIR(data->st_mode) == 0)
             type = opendir(all->paths[all->px]);
-        else if (S_ISDIR(data.st_mode) && (type = opendir(path)) == NULL)//make sure that path is correct!!
+        else if (S_ISDIR(data->st_mode) && (type = opendir(path)) == NULL)
             ft_error(1, path);
     }
+    free(data);
     return (type);
 }
 
@@ -46,126 +41,34 @@ t_info *ft_ls(t_env *all, t_info *info, char *path)
 {
     DIR             *type;
     struct dirent   *file;
-    struct stat     data;
+    struct stat     *data;
 
-    printf("segers1\n");
-    sleep(1);
     type = ft_type(all, type, path);
-    printf("segers2\n");
     while ((file = readdir(type)) != NULL)
     {
-        printf("segers3\n");
+        data = (struct stat *)malloc(sizeof(struct stat));
         if (path == NULL)
             path = ft_strdup(all->paths[all->px]);
         path = ft_strjoin2(path, file->d_name);
-        // printf("paht = [%s]\n", path);
-        info = ft_create_node(info, path, file);
-        lstat(path, &data);
-        if (S_ISDIR(data.st_mode) && all->options.R == true && ft_strncmp(file->d_name, "..", 1) != 0)
-        {
-            // printf("recursion: path= [%s]\n", info->path);
-            all->paths[all->px] = path;
-            info->sub = ft_ls(all, info->sub, all->paths[all->px]);//msy just ened to change what im passing here
-        }
+        // printf("path = [%s]\n", path);
+        info = ft_create_node(info, path, file);//contains leaks that are making dirty memory
+        // path[ft_strlen(path)] = '\0';
+        printf("path = [%s]\n", path);//so liam by fixing create node you have made oath have dirtyy memory some how!
+        data->st_mode = 0;
+        lstat(path, data);
+        if (S_ISDIR(data->st_mode) && all->options.R == true 
+            && ft_strncmp(file->d_name, ".", 1) != 0
+                && (all->paths[all->px] = path))
+            info->sub = ft_ls(all, info->sub, all->paths[all->px]);
         else
             info->sub = NULL;
-        printf("segers4\n");
         path = all->paths[all->px];
     }
-    printf("segers5\n");
     closedir(type);
     while (info->prev != NULL)
         info = info->prev;
     return (info);
 }
-
-// t_info   *ft_ls(t_env *all, t_info *info, char *path)//okay liam so for today the problem is strjoin2. its adding all files and dirs to the path and making the nodes incorrectly!
-// {
-    // DIR             *type;
-    // struct dirent   *file;
-    // struct stat     data;
-//     char            *path2;
-
-//     type = ft_type(all, type, path);
-//     while ((file = readdir(type)) != NULL)
-//     {
-//         // printf("segfault3\n");
-//         // printf("file->d_name = [%s] path = [%s]\n", file->d_name, path);
-//         // sleep(1);
-//         if (path == NULL)
-//         {
-//             path2 = ft_strnew(ft_strlen(all->paths[all->px]));
-//             ft_strcpy(path2, all->paths[all->px]);
-//             path2 = ft_strjoin2(path2, file->d_name);
-//         }
-//         else
-//         {
-//             // if (ft_strcmp(file->d_name, "..") != 0 && ft_strcmp(file->d_name, ".") != 0)
-//             path = ft_strjoin2(path, file->d_name);
-//             // free(path);
-//             printf("NAME BABAY2 = [%s] FILE NAME = [%s]\n", path, file->d_name);
-//             // sleep(2);
-//         }
-//         if (path == NULL)
-//         {
-//             info = ft_create_node(info, path2, file);
-//             lstat(path2, &data);
-//         }
-//         else
-//         {
-//             info = ft_create_node(info, path, file);
-//             lstat(path, &data);
-//         }
-//         // free(path);
-//         if (S_ISDIR(data.st_mode) && all->options.R == true && ft_strcmp(file->d_name, "..") != 0 && ft_strcmp(file->d_name, ".") != 0)//
-//         {
-//             // printf("RECURSE path = %s name = %s\n", info->path, info->name);
-//              all->info->sub = ft_ls(all, info->sub, info->path);
-//         }
-//         else
-//             info->sub = NULL;
-//         // free(path);
-//     }
-    // closedir(type);
-    // while (info->prev != NULL)
-    //     info = info->prev;
-    // return (info);
-// }
-
-// void    ft_ls(t_env *all, t_info *list)//i need to free path every time
-// {
-//     DIR         *type;
-//     struct dirent    *file;
-//     struct stat       data;
-//     char            path;
-
-//     if (all->px == 0 && all->paths[all->px] == NULL)
-//     {
-//         all->paths[all->px] = ft_strnew(1);
-//         all->paths[all->px][0] = '.';
-//     }
-//     if (all->paths[all->px])
-//         if (type = opendir(all->paths[all->px]) == NULL)
-//             ft_error(1, all);
-//     while (file = readdir(type) != NULL)
-//     {
-//         path = ft_strnew(ft_strlen(all->paths[xp]));
-//         ft_strcpy(path, all->paths[xp]);
-//         ft_strjoin2(path, file->d_name);
-//         list = ft_create_node(all, path, file);
-// //i need to store info from the path into data.
-//         lstat(path, &data);
-//         if (S_ISDIR(data.st_mode) && all->options.R == true)//so if its a dir i need to recurse and create a new 
-//             all->info->sub = ft_ls(all, list->sub);
-//         // if (all->options.R == true && S_ISDIR(file))
-            
-        
-
-
-//     }
-                          
-//     ft_ls(all); //recurse here for px
-// }
 
 void    ft_parse_paths(int argc, char **argv, t_env *all)//
 {
