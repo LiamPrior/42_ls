@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/17 13:29:55 by psprawka          #+#    #+#             */
-/*   Updated: 2018/04/21 23:23:15 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/22 23:04:52 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,74 +38,15 @@ void    ft_init(t_env *all, int argc)
     all->options.t = false;
     all->options.l = false;
     all->options.r = false;
-    all->info = (t_info *)malloc(sizeof(t_info));
-    all->info->sub = NULL;
-    all->info->next = NULL;
-    all->info->prev = NULL;
-    all->info->path = NULL;
-    all->info->name = NULL;
-    all->dir = NULL;
+    all->info = NULL;
+    all->type = NULL;
     ft_init_2d(all, argc);
     all->i = 0;
     all->x = 0;
     all->px = 0;
 }
 
-// void    ft_create_node(t_env *all, char *path)
-// {
-//     t_info *cur;
-//     t_info *prev;
-
-//     cur = all->info;
-//     while (cur && cur->next != NULL)
-//         cur = cur->next;
-//     // you have the last one in list
-
-//     if (cur == NULL)
-//     {
-//         cur = (t_info *)malloc(sizeof(t_info));
-//         cur->path = ft_strcur(ft_strlen(path));
-//         ft_strcpy(cur->path, path);
-//     }
-//     if (cur->next == NULL)
-//     {
-//         cur->next = (t_info *)malloc(sizeof(t_info));
-//         cur->path = ft_strcur(ft_strlen(path));
-//         ft_strcpy(cur->path, path);
-//     }
-//     prev = cur;
-//     cur = cur->next;
-//     cur->prev = prev;
-//     cur->next = NULL;
-// }
-
-// t_info    *ft_create_node(t_env *all, char *path, struct dirent *file)//send in a link instead of whole thing
-// {
-//     t_info *new;
-//     t_info *cur;
-
-//     new = (t_info *)malloc(sizeof(t_info));
-//     new->path = ft_strnew(ft_strlen(path);
-//     new->name = ft_strnew(ft_strlen(file->d_name);
-//     ft_strcpy(new->name, file->d_name);
-//     ft_strcpy(new->path, path);
-//     new->next = NULL;
-//     new->sub = NULL;
-//     new->prev = NULL; 
-//     if (all->info == NULL)
-//         all->info = new;
-//     else
-//     {
-//         cur = all->info;
-//         while (cur->next != NULL)
-//             cur = cur->next;
-//         cur->next = new;
-//         new->prev = cur;
-//     }
-//     return (new);
-// }
-
-t_info  *ft_create_node(t_info *info, char *path, struct dirent *file)
+t_info  *ft_create_node(t_env *all, t_info *info, char *path, struct dirent *file)
 {
     t_info *new;
     t_info *cur;
@@ -113,12 +54,16 @@ t_info  *ft_create_node(t_info *info, char *path, struct dirent *file)
     new = (t_info *)malloc(sizeof(t_info));
     new->name = ft_strdup(file->d_name);
     new->path = ft_strdup(path);//so this is creating dirty memory some how
-    printf("new->path = [%s]\n", new->path);
+    // printf("new->path = [%s]\n", new->path);
     new->next = NULL;
     new->sub = NULL;
     new->prev = NULL;    
+    // printf("[%p]\n", info);
     if (info == NULL)
+    {
         info = new;
+        all->info = info;// might need to make this into a 2darray linked list.
+    }
     else
     {
         cur = info;

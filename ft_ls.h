@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:38:34 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/21 21:35:42 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/22 21:40:44 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,10 @@ typedef struct  s_info
 
 typedef struct  s_env
 {
-    t_info      *info;
+    t_info      *info;//may need to make this a 2d well see
     t_options   options;
     char        **paths;
-    char        *dir;
+    char        *type;
     int         px;
     int         x;
     int         i;
@@ -61,7 +61,10 @@ void    ft_error(int i, char *str);
 void    ft_init(t_env *all, int argc);
 void    ft_parse_paths(int argc, char **argv, t_env *all);
 t_info  *ft_ls(t_env *all, char *path, t_info *info);
-t_info  *ft_create_node(t_info *info, char *path, struct dirent *file);
+t_info  *ft_create_node(t_env *all, t_info *info, char *path, struct dirent *file);
 DIR     *ft_type(t_env *all, DIR *type, char *path);
+t_info *ft_merge_sort(t_env *all, t_info *head);
+t_info *ft_merge_links(t_env *all, t_info *head, t_info *second);
+t_info *ft_split(t_info *head);
 
 #endif
