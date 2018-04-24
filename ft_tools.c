@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/17 13:29:55 by psprawka          #+#    #+#             */
-/*   Updated: 2018/04/22 23:04:52 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/23 20:03:41 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,7 @@ t_info  *ft_create_node(t_env *all, t_info *info, char *path, struct dirent *fil
     new->prev = NULL;    
     // printf("[%p]\n", info);
     if (info == NULL)
-    {
         info = new;
-        all->info = info;// might need to make this into a 2darray linked list.
-    }
     else
     {
         cur = info;

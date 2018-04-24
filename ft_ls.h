@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:38:34 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/22 21:40:44 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/23 19:11:15 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct  s_env
     t_options   options;
     char        **paths;
     char        *type;
+    bool        run;
     int         px;
     int         x;
     int         i;
@@ -66,5 +67,6 @@ DIR     *ft_type(t_env *all, DIR *type, char *path);
 t_info *ft_merge_sort(t_env *all, t_info *head);
 t_info *ft_merge_links(t_env *all, t_info *head, t_info *second);
 t_info *ft_split(t_info *head);
+void    ft_display(t_env *all, t_info *head);
 
 #endif

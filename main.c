@@ -6,69 +6,11 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:37:47 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/21 23:30:27 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/23 20:24:52 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
-
-// DIR     *ft_type(t_env *all, DIR *type, char *path)
-// {
-//     struct stat     *data;
-
-//     data = (struct stat *)malloc(sizeof(struct stat));
-//     if (all->px == 0 && all->paths[all->px] == NULL)
-//     {
-//         all->paths[all->px] = ft_strnew(1);
-//         all->paths[all->px][0] = '.';
-//     }
-//     if (all->paths[all->px] && path == NULL 
-//         && (type = opendir(all->paths[all->px])) == NULL)
-//             ft_error(1, all->paths[all->px]);
-//     else if (path != NULL)
-//     {
-//         lstat(path, data);
-//         if(S_ISDIR(data->st_mode) == 0)
-//             type = opendir(all->paths[all->px]);
-//         else if (S_ISDIR(data->st_mode) && (type = opendir(path)) == NULL)
-//             ft_error(1, path);
-//     }
-//     free(data);
-//     return (type);
-// }
-
-// t_info *ft_ls(t_env *all, t_info *info, char *path)//shit code that liam writes. obviously it doesnt work
-// {
-    // DIR             *type;
-    // struct dirent   *file;
-    // struct stat     *data;
-
-//     // printf("[%s]\n", path);
-//     // type = ft_type(all, type, path);
-//     if ((type = opendir(path)) == NULL)
-        
-//     while ((file = readdir(type)) != NULL)
-//     {
-//         data = (struct stat *)malloc(sizeof(struct stat));
-//         if (path == NULL)
-//             path = ft_strdup(all->paths[all->px]);
-//         path = ft_strjoin2(path, file->d_name);
-//         info = ft_create_node(info, path, file);
-//         data->st_mode = 0;
-//         lstat(path, data);
-        // if (S_ISDIR(data->st_mode) && all->options.R == true 
-        //     && ft_strncmp(file->d_name, ".", 1) != 0)
-//                 // && (all->paths[all->px] = path))
-//                     info->sub = ft_ls(all, info->sub, path);//all->paths[all->px]);
-//         else
-//             info->sub = NULL;
-//         path = all->paths[all->px];
-//     }
-    // closedir(type);
-    // while (info->prev != NULL)
-    //     info = info->prev;
-    // return (info);
-// }
 
 t_info  *ft_ls(t_env *all, char *path, t_info *info)
 {
@@ -76,20 +18,21 @@ t_info  *ft_ls(t_env *all, char *path, t_info *info)
     struct dirent   *file;
     struct stat     *data;
 
-    // printf("[%s]\n", path);
     if ((type = opendir(path)) == NULL)
         ft_error(1, path);
     while ((file = readdir(type)))
     {
         data = (struct stat *)malloc(sizeof(struct stat));
-        all->dir = ft_strdup(path);
-        all->dir = ft_strjoin2(path, file->d_name);
-        info = ft_create_node(info, all->dir, file);
-        lstat(all->dir, data);
+        all->type = ft_strdup(path);
+        all->type = ft_strjoin2(path, file->d_name);
+        if ((ft_strncmp(file->d_name, ".", 1) == 0 && all->options.a == true)
+            || (ft_strncmp(file->d_name, ".", 1) != 0))
+                info = ft_create_node(all, info, all->type, file);
+        lstat(all->type, data);
         if (S_ISDIR(data->st_mode) && all->options.R == true 
             && ft_strncmp(file->d_name, ".", 1) != 0)
-                info->sub = ft_ls(all, all->dir, info->sub);
-        else
+                info->sub = ft_ls(all, all->type, info->sub);
+        else if (info)
             info->sub = NULL;
     }
     closedir(type);
@@ -150,8 +93,9 @@ void     ft_toggle_options(int argc, char **argv, t_env *all)
 int     main(int argc, char **argv)
 {
     t_env all;
-
+// printf("herebitch\n");
     ft_init(&all, argc);
+    // printf("herebitch2\n");
     ft_toggle_options(argc, argv, &all);
     ft_parse_paths(argc, argv, &all);
     all.px = 0;
@@ -162,7 +106,24 @@ int     main(int argc, char **argv)
         all.paths[all.px][all.px + 1] = '/';
     }
     // else// while (px < argc)
-    ft_ls(&all, all.paths[all.px], all.info);
+    all.info = ft_ls(&all, all.paths[all.px], all.info);
+    // printf("GIVE A FUCK ABOUT NOTHING]\n");
+    // while (all.info)
+    // {
+    //     printf("%s\n", all.info->name);
+    //     all.info = all.info->next;
+    // }
+    // printf("[%s]\n", all.info->next->name);
+    all.info = ft_merge_sort(&all, all.info);
+    //    while (all.info)
+    // {
+    //     printf("%s\n", all.info->name);
+    //     all.info = all.info->next;
+    // }
+    // printf("[%s]\n", all.info->next->name);
+    ft_display(&all, all.info);
+    // printf("\n\nHERE\n\n");
+    // ft_display();
     return (0);
 }
 
