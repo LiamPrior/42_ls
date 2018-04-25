@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/17 13:29:55 by psprawka          #+#    #+#             */
-/*   Updated: 2018/04/23 20:03:41 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/24 19:30:14 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void ft_init_2d(t_env *all, int argc)
 
 void    ft_init(t_env *all, int argc)
 {
-    all->options.R = false;;
+    all->options.R = false;
     all->options.a = false;
     all->options.t = false;
     all->options.l = false;
@@ -46,7 +46,7 @@ void    ft_init(t_env *all, int argc)
     all->px = 0;
 }
 
-t_info  *ft_create_node(t_env *all, t_info *info, char *path, struct dirent *file)
+t_info  *ft_create_node(t_info *info, char *path, struct dirent *file)
 {
     t_info *new;
     t_info *cur;
@@ -69,7 +69,8 @@ t_info  *ft_create_node(t_env *all, t_info *info, char *path, struct dirent *fil
         cur->next = new;
         new->prev = cur;
     }
-    // printf("%p path: [%s]\nnew->path = [%s] new->name = [%s]\n\n",  new,  path, new->path, new->name);
+    // printf("new->path = [%s]\n", new->path);
+    // printf("%p path: [%s]new->path = [%s] new->name = [%s]\n",  new,  path, new->path, new->name);
     return (new);
 }
 // t_info  *ft_create_node(t_info *info, char *path, struct dirent *file)

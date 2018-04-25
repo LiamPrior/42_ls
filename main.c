@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:37:47 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/23 20:24:52 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/24 21:46:36 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ t_info  *ft_ls(t_env *all, char *path, t_info *info)
         all->type = ft_strjoin2(path, file->d_name);
         if ((ft_strncmp(file->d_name, ".", 1) == 0 && all->options.a == true)
             || (ft_strncmp(file->d_name, ".", 1) != 0))
-                info = ft_create_node(all, info, all->type, file);
+                info = ft_create_node(info, all->type, file);
+        else
+            continue;
         lstat(all->type, data);
         if (S_ISDIR(data->st_mode) && all->options.R == true 
             && ft_strncmp(file->d_name, ".", 1) != 0)
@@ -36,7 +38,7 @@ t_info  *ft_ls(t_env *all, char *path, t_info *info)
             info->sub = NULL;
     }
     closedir(type);
-    while (info->prev != NULL)
+    while (info && info->prev != NULL)
         info = info->prev;
     return (info);
 }
@@ -108,17 +110,22 @@ int     main(int argc, char **argv)
     // else// while (px < argc)
     all.info = ft_ls(&all, all.paths[all.px], all.info);
     // printf("GIVE A FUCK ABOUT NOTHING]\n");
-    // while (all.info)
+    // while (temp)
     // {
-    //     printf("%s\n", all.info->name);
-    //     all.info = all.info->next;
+    //     printf("%s\n", temp->path);
+    //     temp = temp->next;
     // }
+    // t_info *temp = all.info;
+    // printf("[%s]\n", temp->next->next->next->next->next->next->sub->next->next->name);
+    // printf("its valid [%s]\n", temp->sub->path);
     // printf("[%s]\n", all.info->next->name);
     all.info = ft_merge_sort(&all, all.info);
-    //    while (all.info)
+    // all.info = call_merge(&all, all.info);
+    // t_info *temp = all.info;
+    // while (temp)
     // {
-    //     printf("%s\n", all.info->name);
-    //     all.info = all.info->next;
+    //     printf("%s\n", temp->path);
+    //     temp = temp->next;
     // }
     // printf("[%s]\n", all.info->next->name);
     ft_display(&all, all.info);
@@ -135,4 +142,4 @@ int     main(int argc, char **argv)
 // {
 //     printf("path arg [%d][%s]\n", x, all.paths[x]);
 //     x++;
-// }
+// }0
