@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:38:34 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/24 21:16:27 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/26 20:25:03 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <grp.h>
 # include <pwd.h>
 # include <stdbool.h>
+# include <time.h>
 
 typedef struct  s_options
 {
@@ -40,9 +41,12 @@ typedef struct  s_info
 {
     char        *name;
     char        *path;
+    char        *color;
+    struct      stat        *data;
     struct      s_info      *next;
     struct      s_info      *prev;
     struct      s_info      *sub;
+    struct      timespec    time;
 }               t_info;
 
 typedef struct  s_env
@@ -67,5 +71,5 @@ t_info *ft_merge_sort(t_env *all, t_info *head);
 t_info *ft_merge_links(t_env *all, t_info *head, t_info *second);
 t_info *ft_split(t_info *head);
 void    ft_display(t_env *all, t_info *head);
-
+int     ft_get_time(t_info *first, t_info *second);
 #endif

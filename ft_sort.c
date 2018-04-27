@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/22 21:03:15 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/24 23:08:32 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/26 16:25:04 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,58 +15,82 @@
 
 //i still need to be able to handle if they pass in more tahn one arg and time shit.
 
-t_info *ft_split(t_info *head)
-{
-    t_info *fast;
-    t_info *slow;
-    t_info *temp;
+// t_info *ft_split(t_info *head)
+// {
+//     t_info *fast;
+//     t_info *slow;
+//     t_info *temp;
     
-    fast = head;
-    slow = head;
-    while (fast->next && fast->next->next)
+//     fast = head;
+//     slow = head;
+//     while (fast->next && fast->next->next)
+//     {
+//         fast = fast->next->next;
+//         slow = slow->next;
+//     }
+//     temp = slow->next;
+//     slow->next = NULL;
+//     return (temp);
+// }
+// int			sort_time(t_list *a, t_list *b)
+// {
+// 	long diff;
+// 	long ndiff;
+
+// 	diff = a->time.tv_sec - b->time.tv_sec;
+// 	if (!diff)
+// 	{
+// 		ndiff = a->time.tv_nsec - b->time.tv_nsec;
+// 		if (!ndiff)
+// 			return (ft_strcmp(a->name, b->name) <= 0 ? 1 : 0);
+// 		return (ndiff >= 0 ? 1: 0);
+// 	}
+// 	return (diff >= 0 ? 1 : 0);
+// }
+t_info *ft_time_sort(t_env *all, t_info *first, t_info *second)
+{
+    if (!(first))
+        return (second);
+    if (!(second))
+        return (first);
+    // printf("here\n");
+    if (ft_get_time(first, second))//if the time is 0 that means the last modified file was second
     {
-        fast = fast->next->next;
-        slow = slow->next;
+        first->next = ft_time_sort(all, first->next, second);
+        first->next->prev = first;
+        first->prev = NULL;
+        
+        return (first);
     }
-    temp = slow->next;
-    // printf("temp = [%s]\n", temp->path);
-    slow->next = NULL;
-    return (temp);
+    else//if its a 1 that means the first file was modified last
+    {
+        second->next = ft_time_sort(all, first, second->next);
+        second->next->prev = first;
+        second->prev = NULL;
+        return (second);
+    }
 }
 
 t_info *ft_merge_links(t_env *all, t_info *first, t_info *second)
 {
     if (!(first))
-    {
-        // printf("here %s\n", second->name);
         return (second);
-    }
     if (!(second))
-    {
-        // printf("here2 %s\n", first->name);
         return (first);
-    }
-    // printf("first = [%s] second = [%s]\n", first->path, second->path);
-    // sleep(5);
-    // printf("first = [%s]  second = [%s]\n", first->name, second->name);
     if (first->name[all->i] < second->name[all->i])
     {
         all->i = 0;
-        // printf("first1 = [%s]  second = [%s]\n", first->name, second->name);
         first->next = ft_merge_links(all, first->next, second);
         first->next->prev = first;
         first->prev = NULL;
-        // printf("return  first = %s\n", first->name);
         return (first);
     }
     else if (first->name[all->i] > second->name[all->i]) 
     {
         all->i = 0;
-        // printf("first2 = [%s]  second2 = [%s]\n", first->name, second->name);
         second->next = ft_merge_links(all, first, second->next);
         second->next->prev = second;
         second->prev = NULL;
-        // printf("return second = %s\n", second->name);
         return (second);
     }
     else
@@ -83,19 +107,18 @@ t_info *ft_merge_sort(t_env *all, t_info *head)
 
     all->i = 0;
     ptr = head;
-    // printf("ptr = [%s]\n", ptr->path);
     if (!head || !head->next)
         return head;
     second = ft_split(head);
     head = ft_merge_sort(all, head);
     second = ft_merge_sort(all, second);
     ptr = head;
-    while (ptr && all->options.R == true)//for some reason it doesnt work if the next node in line of a lesser value
+    while (ptr && all->options.R == true)
     {
         if (ptr->sub != NULL)
              ptr->sub = ft_merge_sort(all, ptr->sub);
         ptr = ptr->next;
     }
-    // printf("before here\n");
-  return (ft_merge_links(all, head, second));
+    return (all->options.t == true ? ft_time_sort(all, head, second) 
+        : ft_merge_links(all, head, second));
 }

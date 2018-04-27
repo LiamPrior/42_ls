@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:37:47 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/24 21:46:36 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/26 20:25:14 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_info  *ft_ls(t_env *all, char *path, t_info *info)
 
     if ((type = opendir(path)) == NULL)
         ft_error(1, path);
-    while ((file = readdir(type)))
+    while ((file = readdir(type)))//may need to lstat in create node to save lines and assign time and color innode creations;
     {
         data = (struct stat *)malloc(sizeof(struct stat));
         all->type = ft_strdup(path);
@@ -31,11 +31,16 @@ t_info  *ft_ls(t_env *all, char *path, t_info *info)
         else
             continue;
         lstat(all->type, data);
+        info->color = S_ISDIR(data->st_mode) ? ft_strdup("\x1B[35m") 
+                    : ft_strdup("\x1B[37m");
+        info->data = data;
+        info->time = info ? data->st_mtimespec : info->time;
         if (S_ISDIR(data->st_mode) && all->options.R == true 
             && ft_strncmp(file->d_name, ".", 1) != 0)
                 info->sub = ft_ls(all, all->type, info->sub);
         else if (info)
             info->sub = NULL;
+            free(data);
     }
     closedir(type);
     while (info && info->prev != NULL)
@@ -109,25 +114,7 @@ int     main(int argc, char **argv)
     }
     // else// while (px < argc)
     all.info = ft_ls(&all, all.paths[all.px], all.info);
-    // printf("GIVE A FUCK ABOUT NOTHING]\n");
-    // while (temp)
-    // {
-    //     printf("%s\n", temp->path);
-    //     temp = temp->next;
-    // }
-    // t_info *temp = all.info;
-    // printf("[%s]\n", temp->next->next->next->next->next->next->sub->next->next->name);
-    // printf("its valid [%s]\n", temp->sub->path);
-    // printf("[%s]\n", all.info->next->name);
     all.info = ft_merge_sort(&all, all.info);
-    // all.info = call_merge(&all, all.info);
-    // t_info *temp = all.info;
-    // while (temp)
-    // {
-    //     printf("%s\n", temp->path);
-    //     temp = temp->next;
-    // }
-    // printf("[%s]\n", all.info->next->name);
     ft_display(&all, all.info);
     // printf("\n\nHERE\n\n");
     // ft_display();
@@ -143,3 +130,23 @@ int     main(int argc, char **argv)
 //     printf("path arg [%d][%s]\n", x, all.paths[x]);
 //     x++;
 // }0
+// [timetest/newesttimer1]
+// [timetest/timer2]
+// [timetest/yeahinbetween2-3]
+// [timetest/timer3]
+
+
+// newesttimer1
+// timer2
+// aaayyyrightinfrontofyeah^
+// yeahinbetween2-3
+// timer3
+// timer4
+// inbetween5-6
+// timer5
+// timer6
+
+
+// head node
+// ::::::::::
+// [newesttimer1]
