@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/22 21:03:15 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/26 16:25:04 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/27 18:55:38 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ t_info *ft_time_sort(t_env *all, t_info *first, t_info *second)
         first->next = ft_time_sort(all, first->next, second);
         first->next->prev = first;
         first->prev = NULL;
-        
         return (first);
     }
     else//if its a 1 that means the first file was modified last
@@ -100,7 +99,7 @@ t_info *ft_merge_links(t_env *all, t_info *first, t_info *second)
     }
 }
 
-t_info *ft_merge_sort(t_env *all, t_info *head)
+t_info *ft_merge_sort(t_env *all, t_info *head)//okay so my split isnt working rn because for some reasoon it isnt recusing so what you need to do is print pointer with theat printf and see why its not recursing
 {
     t_info *second;
     t_info *ptr;
@@ -110,6 +109,7 @@ t_info *ft_merge_sort(t_env *all, t_info *head)
     if (!head || !head->next)
         return head;
     second = ft_split(head);
+    printf("first = [%s]     second = [%s]\n", head->name, second->name);
     head = ft_merge_sort(all, head);
     second = ft_merge_sort(all, second);
     ptr = head;
@@ -117,6 +117,7 @@ t_info *ft_merge_sort(t_env *all, t_info *head)
     {
         if (ptr->sub != NULL)
              ptr->sub = ft_merge_sort(all, ptr->sub);
+        printf("ptr name [%s]", ptr->name );
         ptr = ptr->next;
     }
     return (all->options.t == true ? ft_time_sort(all, head, second) 

@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:38:34 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/26 20:25:03 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/27 18:30:48 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,15 @@ void    ft_error(int i, char *str);
 void    ft_init(t_env *all, int argc);
 void    ft_parse_paths(int argc, char **argv, t_env *all);
 t_info  *ft_ls(t_env *all, char *path, t_info *info);
-t_info  *ft_create_node(t_info *info, char *path, struct dirent *file);
+t_info  *ft_create_node(t_env *all, t_info *info, char *path, struct dirent *file);
 DIR     *ft_type(t_env *all, DIR *type, char *path);
 t_info *ft_merge_sort(t_env *all, t_info *head);
 t_info *ft_merge_links(t_env *all, t_info *head, t_info *second);
 t_info *ft_split(t_info *head);
 void    ft_display(t_env *all, t_info *head);
 int     ft_get_time(t_info *first, t_info *second);
+// void    ft_display2(t_env *all, t_info *head);
+void ft_myprinter(t_env *all, t_info *head);
+void    ft_display2(t_env *all, t_info *head);
+
 #endif

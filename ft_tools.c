@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/17 13:29:55 by psprawka          #+#    #+#             */
-/*   Updated: 2018/04/26 20:24:04 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/27 13:39:08 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,21 @@ void    ft_init(t_env *all, int argc)
     all->px = 0;
 }
 
-t_info  *ft_create_node(t_info *info, char *path, struct dirent *file)
+t_info  *ft_create_node(t_env *all, t_info *info, char *path, struct dirent *file)
 {
     t_info *new;
     t_info *cur;
+    struct stat     *data;
 
+    data = (struct stat *)malloc(sizeof(struct stat));
     new = (t_info *)malloc(sizeof(t_info));
     new->name = ft_strdup(file->d_name);
     new->path = ft_strdup(path);
-    new->color = NULL;
+    lstat(path, data);
+    new->data = data;
+    new->color = S_ISDIR(data->st_mode) ? ft_strdup("\x1B[35m") 
+                    : ft_strdup("\x1B[37m");
+    new->time = all->options.t ? data->st_mtimespec : new->time;  
     new->next = NULL;
     new->sub = NULL;
     new->prev = NULL;

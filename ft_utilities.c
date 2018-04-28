@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/25 13:10:51 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/26 16:27:39 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/27 18:39:07 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ t_info *ft_split(t_info *head)
     
     fast = head;
     slow = head;
+    printf("fast = [%s]\n", fast->name);
     while (fast->next && fast->next->next)
     {
         fast = fast->next->next;
@@ -27,6 +28,7 @@ t_info *ft_split(t_info *head)
     }
     temp = slow->next;
     slow->next = NULL;
+    printf("slow = [%s]\n", temp->name);
     return (temp);
 }
 

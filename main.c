@@ -6,49 +6,40 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:37:47 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/26 20:25:14 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/27 18:48:00 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-t_info  *ft_ls(t_env *all, char *path, t_info *info)
+t_info  *ft_ls(t_env *all, char *path, t_info *info)//okay so i need to lstat in my create node function
 {
     DIR             *type;
     struct dirent   *file;
-    struct stat     *data;
+    // struct stat     *data;
 
     if ((type = opendir(path)) == NULL)
         ft_error(1, path);
-    while ((file = readdir(type)))//may need to lstat in create node to save lines and assign time and color innode creations;
+    while ((file = readdir(type)))
     {
-        data = (struct stat *)malloc(sizeof(struct stat));
         all->type = ft_strdup(path);
         all->type = ft_strjoin2(path, file->d_name);
         if ((ft_strncmp(file->d_name, ".", 1) == 0 && all->options.a == true)
             || (ft_strncmp(file->d_name, ".", 1) != 0))
-                info = ft_create_node(info, all->type, file);
+                info = ft_create_node(all, info, all->type, file);
         else
             continue;
-        lstat(all->type, data);
-        info->color = S_ISDIR(data->st_mode) ? ft_strdup("\x1B[35m") 
-                    : ft_strdup("\x1B[37m");
-        info->data = data;
-        info->time = info ? data->st_mtimespec : info->time;
-        if (S_ISDIR(data->st_mode) && all->options.R == true 
+        if (S_ISDIR(info->data->st_mode) && all->options.R == true 
             && ft_strncmp(file->d_name, ".", 1) != 0)
                 info->sub = ft_ls(all, all->type, info->sub);
         else if (info)
             info->sub = NULL;
-            free(data);
     }
     closedir(type);
     while (info && info->prev != NULL)
         info = info->prev;
     return (info);
 }
-
-
 
 void    ft_parse_paths(int argc, char **argv, t_env *all)//
 {
@@ -115,38 +106,41 @@ int     main(int argc, char **argv)
     // else// while (px < argc)
     all.info = ft_ls(&all, all.paths[all.px], all.info);
     all.info = ft_merge_sort(&all, all.info);
-    ft_display(&all, all.info);
+    // printf("[%s]\n", all.info->name);
+    // printf("[%s]\n", all.info->next->name);
+    // printf("[%s]\n", all.info->next->sub->name);
+    // printf("[%s]\n", all.info->next->sub->next->name);
+    // ft_display2(&all, all.info);
+    // ft_display(&all, all.info);
     // printf("\n\nHERE\n\n");
     // ft_display();
     return (0);
 }
 
-// printf("asdfasdfasf %d\n", all.x);
-// printf("R[%d]a[%d]t[%d]l[%d]r[%d]\n", all.options.R, all.options.a, all.options.t, all.options.l, all.options.r);
+// firstfloor
+// level1
 
-// int x = 0;
-// while (all.paths[x])
-// {
-//     printf("path arg [%d][%s]\n", x, all.paths[x]);
-//     x++;
-// }0
-// [timetest/newesttimer1]
-// [timetest/timer2]
-// [timetest/yeahinbetween2-3]
-// [timetest/timer3]
+// test/level1/:
+// secondfloor
+// level2
 
+// test/level1/level2/:
+// level3
+// thirdfloor
 
-// newesttimer1
-// timer2
-// aaayyyrightinfrontofyeah^
-// yeahinbetween2-3
-// timer3
-// timer4
-// inbetween5-6
-// timer5
-// timer6
+// test/level1/level2/level3/:
+// 4thfloorinhere
+// ///////////////////////
+// firstfloor
+// level1
 
+// test/level1:
+// level2
+// secondfloor
 
-// head node
-// ::::::::::
-// [newesttimer1]
+// test/level1/level2:
+// level3
+// thirdfloor
+
+// test/level1/level2/level3:
+// 4thfloorinhere
