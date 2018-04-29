@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/22 21:03:15 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/27 18:55:38 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/28 21:02:52 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,10 @@ t_info *ft_merge_links(t_env *all, t_info *first, t_info *second)
         return (second);
     if (!(second))
         return (first);
+        // printf("%sfirst [%s] and second [%s]\n%s", "\x1B[34m", first->name, second->name, "\x1B[0m");
     if (first->name[all->i] < second->name[all->i])
     {
+        // printf("%ssecond is greater = [%s] > [%s]%s\n", "\x1b[32m", second->name, first->name, "\x1B[0m");
         all->i = 0;
         first->next = ft_merge_links(all, first->next, second);
         first->next->prev = first;
@@ -87,6 +89,7 @@ t_info *ft_merge_links(t_env *all, t_info *first, t_info *second)
     else if (first->name[all->i] > second->name[all->i]) 
     {
         all->i = 0;
+        // printf("%sfirst is greater = [%s] > [%s]%s\n", "\x1B[31m", first->name, second->name, "\x1B[0m");
         second->next = ft_merge_links(all, first, second->next);
         second->next->prev = second;
         second->prev = NULL;
@@ -109,17 +112,8 @@ t_info *ft_merge_sort(t_env *all, t_info *head)//okay so my split isnt working r
     if (!head || !head->next)
         return head;
     second = ft_split(head);
-    printf("first = [%s]     second = [%s]\n", head->name, second->name);
     head = ft_merge_sort(all, head);
     second = ft_merge_sort(all, second);
-    ptr = head;
-    while (ptr && all->options.R == true)
-    {
-        if (ptr->sub != NULL)
-             ptr->sub = ft_merge_sort(all, ptr->sub);
-        printf("ptr name [%s]", ptr->name );
-        ptr = ptr->next;
-    }
     return (all->options.t == true ? ft_time_sort(all, head, second) 
         : ft_merge_links(all, head, second));
 }

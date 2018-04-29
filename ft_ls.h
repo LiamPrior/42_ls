@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:38:34 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/27 18:30:48 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/28 20:13:22 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,6 @@ t_info *ft_merge_links(t_env *all, t_info *head, t_info *second);
 t_info *ft_split(t_info *head);
 void    ft_display(t_env *all, t_info *head);
 int     ft_get_time(t_info *first, t_info *second);
-// void    ft_display2(t_env *all, t_info *head);
 void ft_myprinter(t_env *all, t_info *head);
-void    ft_display2(t_env *all, t_info *head);
-
+void    ft_displaytwo(t_env *all, t_info *head);
 #endif

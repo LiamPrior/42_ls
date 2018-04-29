@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/25 13:10:51 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/27 18:39:07 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/28 20:14:33 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_info *ft_split(t_info *head)
     
     fast = head;
     slow = head;
-    printf("fast = [%s]\n", fast->name);
+    // printf("fast = [%s]\n", fast->name);
     while (fast->next && fast->next->next)
     {
         fast = fast->next->next;
@@ -28,7 +28,7 @@ t_info *ft_split(t_info *head)
     }
     temp = slow->next;
     slow->next = NULL;
-    printf("slow = [%s]\n", temp->name);
+    // printf("slow = [%s]\n", temp->name);
     return (temp);
 }
 
@@ -47,7 +47,6 @@ int     ft_get_time(t_info *first, t_info *second)
     long nano_seconds;
 
 	seconds = first->time.tv_sec - second->time.tv_sec;
-
     if (!seconds)
 	{
 		nano_seconds = first->time.tv_nsec - second->time.tv_nsec;

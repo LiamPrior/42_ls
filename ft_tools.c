@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/17 13:29:55 by psprawka          #+#    #+#             */
-/*   Updated: 2018/04/27 13:39:08 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/28 21:45:23 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ t_info  *ft_create_node(t_env *all, t_info *info, char *path, struct dirent *fil
     new->data = data;
     new->color = S_ISDIR(data->st_mode) ? ft_strdup("\x1B[35m") 
                     : ft_strdup("\x1B[37m");
+    // printf("%s[%s]%s\n", new->color, new->path, "\x1B[37m");
     new->time = all->options.t ? data->st_mtimespec : new->time;  
     new->next = NULL;
     new->sub = NULL;
@@ -65,5 +66,6 @@ t_info  *ft_create_node(t_env *all, t_info *info, char *path, struct dirent *fil
         cur->next = new;
         new->prev = cur;
     }
+    // free(data);
     return (new);
 }
