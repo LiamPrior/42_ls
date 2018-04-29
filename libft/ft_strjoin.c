@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/27 13:33:40 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/21 22:37:29 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/28 22:10:33 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (str);
 }
 
-char *ft_strjoin2(char const *s1, char const *s2)//may not work with /
+char *ft_strjoin2(char const *s1, char const *s2)//okay so path is fucked up so that means that sometimes your merge sort wont even see some dirs as dirs because the path is filled with dirty memopry
 {//so in char** add a slash to the end of each thing
 	char	*str;
 
@@ -39,7 +39,6 @@ char *ft_strjoin2(char const *s1, char const *s2)//may not work with /
 	str = ft_strcat(str, s2);
 	str[ft_strlen(str)] = '/';
 	str[ft_strlen(str) + 1] = '\0';
-
 	// free(s1);
 	// printf("in strjoin[%s]\n", str);
 	return (str);

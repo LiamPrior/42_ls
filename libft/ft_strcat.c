@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/19 12:13:23 by lprior            #+#    #+#             */
-/*   Updated: 2017/09/29 16:49:29 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/28 21:59:10 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,6 @@ char	*ft_strcat(char *s1, const char *s2)
 	while (*s2 != '\0')
 		s1[x++] = *s2++;
 	s1[x] = '\0';
+	printf("im in str[%s]\n", s1);
 	return (s1);
 }
