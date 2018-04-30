@@ -6,11 +6,41 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/25 13:10:51 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/28 20:14:33 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/29 20:11:37 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
+
+t_info    *ft_init_merge(t_env *all, t_info *head, int cycle)
+{
+    t_info *ptr;
+
+    if (head)
+         head = ft_merge_sort(all, head);
+    ptr = head;
+    while (ptr != NULL)
+    { 
+        if (ptr->sub)
+            ptr->sub = ft_init_merge(all, ptr->sub, cycle + 1);
+        ptr = ptr->next;
+    }
+    return (head);
+}
+
+void    ft_stat_color(struct stat *data, t_info *new)
+{
+    lstat(new->path, data);
+    new->data = data;
+    if (S_ISDIR(data->st_mode))
+        new->color = strdup("\x1B[35m");
+    else if (data->st_mode & S_IXUSR && !S_ISLNK(data->st_mode))
+        new->color = ft_strdup("\x1B[31m");
+    else if (S_ISLNK(data->st_mode))
+        new->color = ft_strdup("\x1B[33m");
+    else
+        new->color = ft_strdup("\x1B[37m");
+}
 
 t_info *ft_split(t_info *head)
 {
@@ -20,7 +50,6 @@ t_info *ft_split(t_info *head)
     
     fast = head;
     slow = head;
-    // printf("fast = [%s]\n", fast->name);
     while (fast->next && fast->next->next)
     {
         fast = fast->next->next;
@@ -28,7 +57,6 @@ t_info *ft_split(t_info *head)
     }
     temp = slow->next;
     slow->next = NULL;
-    // printf("slow = [%s]\n", temp->name);
     return (temp);
 }
 
@@ -54,5 +82,5 @@ int     ft_get_time(t_info *first, t_info *second)
 			return (ft_strcmp(first->name, second->name) <= 0 ? 1 : 0);
 		return (nano_seconds > 0 ? 1: 0);
 	}
-	return (seconds > 0 ? 1 : 0);//may need = sign
+	return (seconds > 0 ? 1 : 0);
 }
