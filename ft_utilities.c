@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/25 13:10:51 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/29 20:11:37 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/30 21:49:30 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,11 @@ void    ft_stat_color(struct stat *data, t_info *new)
 {
     lstat(new->path, data);
     new->data = data;
+    // if (opendir(new->path) == NULL && !S_ISREG(data->st_mode) 
+    //     && !S_ISCHR(data->st_mode) && !S_ISBLK(data->st_mode) 
+    //         && !S_ISFIFO(data->st_mode) && !S_ISLNK(data->st_mode)
+    //             && !S_ISSOCK(data->st_mode))
+                // ft_error(1, new->path);
     if (S_ISDIR(data->st_mode))
         new->color = strdup("\x1B[35m");
     else if (data->st_mode & S_IXUSR && !S_ISLNK(data->st_mode))

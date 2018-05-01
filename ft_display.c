@@ -6,31 +6,14 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/22 21:58:57 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/29 22:03:04 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/30 20:59:20 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 //okay so i can print all the things 
 
-
-// void    ft_displaytwo(t_env *all, t_info *head)
-// {
-//     t_info *ptr;
-
-//     ptr = head;
-//     // printf("HERE\n");
-//     // if (all->options.r == false && all->options.R == false)
-//         while (ptr)
-//         {
-//             ft_printf("%s%s%s\n", ptr->color, ptr->name, NORMAL);
-//             if (ptr && all->options.R == true && ptr->sub != NULL)
-//                 ft_displaytwo(all, ptr->sub);
-//             ptr = ptr->next;
-//         } 
-// }
-
-void printer(t_info *head)
+void printer(t_env *all, t_info *head)
 {
     t_info *ptr;
 
@@ -38,54 +21,58 @@ void printer(t_info *head)
     while (ptr)
     {
         ft_printf("%s%s%s\n", ptr->color, ptr->name, NORMAL);
-        ptr = ptr->next;
+        ptr = all->options.r ? ptr->prev : ptr->next;
     }
 }
 
-void ft_myprinter(t_env *all, t_info *head)
+void    ft_print_long(t_env *all, t_info *head)//i need to get total memory blocks!!!!!!!!
+{
+    char *perms;
+    struct group *grp;
+    struct passwd *usr;
+
+    while (head)
+    {
+        perms = ft_strnew(1);
+        ft_get_perms(head, perms);
+        ft_printf("%d ", head->data->st_nlink);
+        grp = getgrgid(head->data->st_gid);
+        usr = getpwuid(head->data->st_uid);
+        ft_printf("%s  ", usr->pw_name); 
+        ft_printf("%s ", grp->gr_name);
+        ft_printf("%6d ", head->data->st_size);
+        ft_print_time(head);
+        ft_printf("%s%s%s\n", head->color, head->name, NORMAL);
+        head = all->options.r == true ? head->prev : head->next;
+    }
+}
+
+void ft_recursive_print(t_env *all, t_info *head)
 {
     t_info *ptr;
 
     ptr = head;
-    printer(ptr);
+    all->options.l == true ? ft_print_long(all, ptr) : printer(all, ptr);
     while (ptr && all->options.R == true)
     {
         if (S_ISDIR(ptr->data->st_mode))
         {
             ft_printf("\n%s:\n", ptr->path);//////////////////////////////////////
             if (ptr->sub != NULL)
-                ft_myprinter(all, ptr->sub);
+                ft_recursive_print(all, ptr->sub);
         }
-        ptr = ptr->next;
+        ptr = all->options.r == true ? ptr->prev : ptr->next;
     }
-}
-
-void    ft_print_long(t_env *all, t_info *head)
-{
-    ft_get_perms(head);
-    
-
 }
 
 void    ft_display(t_env *all, t_info *head)
 {
     t_info *ptr;
-    char *perms;// move this to a struct;
 
-    perms = ft_strnew(1);
     ptr = head;
-    // if (all->options.r == false && all->options.R == false)
-        while (ptr && all->options.R == false && all->options.l == false && all->options.r == false)
-        {
-            ft_printf("%s%s%s\n", ptr->color, ptr->name, NORMAL);
-            ptr = ptr->next;
-        }
-        ptr = head;
-        if (all->options.R == true)
-            ft_myprinter(all, ptr);//may need to add if statement for -R
-        if (all->options.l == true)//gonna not even have this later!
-            ft_print_long();
+    ptr = all->options.r == true ? ft_goto_end(all, ptr) : ptr;
+    if (all->options.R == true)
+        ft_recursive_print(all, ptr);//may need to add if statement for -R
+    if (all->options.l == true)//gonna not even have this later!
+        ft_print_long(all, ptr);
 }
-
-            // if (ptr && all->options.R == true && ptr->sub != NULL)
-            //     ft_display(all, ptr->sub);

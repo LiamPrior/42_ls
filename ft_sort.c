@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/22 21:03:15 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/29 19:42:10 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/30 20:53:31 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ t_info *ft_time_sort(t_env *all, t_info *first, t_info *second)
     else
     {
         second->next = ft_time_sort(all, first, second->next);
-        second->next->prev = first;
+        second->next->prev = second;
         second->prev = NULL;
         return (second);
     }

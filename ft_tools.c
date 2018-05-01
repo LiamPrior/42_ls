@@ -6,11 +6,24 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/17 13:29:55 by psprawka          #+#    #+#             */
-/*   Updated: 2018/04/29 22:04:40 by lprior           ###   ########.fr       */
+/*   Updated: 2018/04/30 22:19:27 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
+
+void ft_print_time(t_info *head)
+{
+    char *timer;
+    int i;
+
+    timer = ctime(&head->time.tv_sec);
+    timer += 4;
+    i = ft_strlen(timer);
+    i -= 9;
+    timer[i] = '\0';
+    ft_printf("%s ", timer);
+}
 
 void ft_init_2d(t_env *all, int argc)
 {
@@ -22,32 +35,33 @@ void ft_init_2d(t_env *all, int argc)
         all->paths[i++] = NULL;
 }
 
-void    ft_get_perms(t_info *haed, char *perms)
+void    ft_get_perms(t_info *head, char *perms)
 {
-    if (S_IFBLK(data->st_mode))
-        perms = ft_strjoin(perms, "b");
-    else if (S_IFCHR(data->st_mode))
-        perms = ft_strjoin(perms, "c");
-    else if (_ISDIR(data->st_mode))
+    if (S_ISDIR(head->data->st_mode))
        perms = ft_strjoin(perms, "d");
-    else if (S_ISLNK(data->st_mode))
+    else if (S_ISCHR(head->data->st_mode))
+        perms = ft_strjoin(perms, "c");
+    else if (S_ISBLK(head->data->st_mode))
+        perms = ft_strjoin(perms, "b");
+    else if (S_ISLNK(head->data->st_mode))
        perms = ft_strjoin(perms, "l");
-    else if (S_IFSOCK(data->st_mode))
+    else if (S_ISSOCK(head->data->st_mode))
         perms = ft_strjoin(perms, "s");
-    else if (S_IFIFO(data->st_mode))
+    else if (S_ISFIFO(head->data->st_mode))
         perms = ft_strjoin(perms, "p");
     else
        perms = ft_strjoin(perms, "-");
-    perms = S_IRUSR(head->data->st_mode) ? ft_strjoin(perms, "r") : ft_strjoin(temp, "-");
-    perms = S_IWUSR(head->data->st_mode) ? ft_strjoin(perms, "w") : ft_strjoin(temp, "-");
-    perms = S_IXUSR(head->data->st_mode) ? ft_strjoin(perms, "x") : ft_strjoin(temp, "-");
-    perms = S_IRGRP(head->data->st_mode) ? ft_strjoin(perms, "r") : ft_strjoin(temp, "-");
-    perms = S_IWGRP(head->data->st_mode) ? ft_strjoin(perms, "w") : ft_strjoin(perms, "-");
-    perms = S_IXGRP(head->data->st_mode) ? ft_strjoin(perms, "x") : ft_strjoin(perms, "-");
-    perms = S_IROTH(head->data->st_mode) ? ft_strjoin(perms, "r") : ft_strjoin(perms, "-");
-    perms = S_IWOTH(head->data->st_mode) ? ft_strjoin(perms, "w") : ft_strjoin(perms, "-");
-    perms = S_IXOTH(head->data->st_mode) ? ft_strjoin(perms, "x") : ft_strjoin(perms, "-");
-    return (perms);
+    perms = S_IRUSR & head->data->st_mode ? ft_strjoin(perms, "r") : ft_strjoin(perms, "-");
+    perms = S_IWUSR & head->data->st_mode ? ft_strjoin(perms, "w") : ft_strjoin(perms, "-");
+    perms = S_IXUSR & head->data->st_mode ? ft_strjoin(perms, "x") : ft_strjoin(perms, "-");
+    perms = S_IRGRP & head->data->st_mode ? ft_strjoin(perms, "r") : ft_strjoin(perms, "-");
+    perms = S_IWGRP & head->data->st_mode ? ft_strjoin(perms, "w") : ft_strjoin(perms, "-");
+    perms = S_IXGRP & head->data->st_mode ? ft_strjoin(perms, "x") : ft_strjoin(perms, "-");
+    perms = S_IROTH & head->data->st_mode ? ft_strjoin(perms, "r") : ft_strjoin(perms, "-");
+    perms = S_IWOTH & head->data->st_mode ? ft_strjoin(perms, "w") : ft_strjoin(perms, "-");
+    perms = S_IXOTH & head->data->st_mode ? ft_strjoin(perms, "x") : ft_strjoin(perms, "-");
+    ft_printf("%s  ", perms);
+    free(perms);
 }
 
 void    ft_init(t_env *all, int argc)
@@ -65,18 +79,19 @@ void    ft_init(t_env *all, int argc)
     all->px = 0;
 }
 
-t_info  *ft_create_node(t_env *all, t_info *info, char *path, struct dirent *file)
+t_info  *ft_create_node(t_env *all, t_info *info, char *path, char *name)//struct dirent *file)//so i changed this so i dont hvae to pass file from ft_check_paths!
 {
     t_info *new;
     t_info *cur;
     struct stat     *data;
 
+    printf("here in create node\n");
     data = (struct stat *)malloc(sizeof(struct stat));
     new = (t_info *)malloc(sizeof(t_info));
-    new->name = ft_strdup(file->d_name);
+    new->name = ft_strdup(name);//(file->d_name);//remember that if it hits check paths then the path will be name/name essetially
     new->path = ft_strdup(path);
     ft_stat_color(data, new);
-    new->time = all->options.t ? data->st_mtimespec : new->time;  
+    new->time = data->st_mtimespec;  
     new->next = NULL;
     new->sub = NULL;
     new->prev = NULL;
@@ -91,5 +106,6 @@ t_info  *ft_create_node(t_env *all, t_info *info, char *path, struct dirent *fil
         new->prev = cur;
     }
     // free(data);
+    // printf("time of node = %s\n", ctime(&new->time.tv_sec));
     return (new);
 }
