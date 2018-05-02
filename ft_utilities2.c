@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/30 18:10:50 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/30 20:54:34 by lprior           ###   ########.fr       */
+/*   Updated: 2018/05/01 23:42:42 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ t_info *ft_goto_end(t_env *all, t_info *ptr)
 {
     while (ptr->next)
     {
-        if (ptr && all->options.R == true && ptr->sub != NULL)
-            ft_goto_end(all, ptr->sub);
+        if (ptr->next && all->options.R == true && ptr->sub != NULL)
+            ptr->sub = ft_goto_end(all, ptr->sub);
         ptr = ptr->next;
     }
     return (ptr);

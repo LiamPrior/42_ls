@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/17 13:29:55 by psprawka          #+#    #+#             */
-/*   Updated: 2018/04/30 22:19:27 by lprior           ###   ########.fr       */
+/*   Updated: 2018/05/01 22:22:44 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,16 @@ void    ft_init(t_env *all, int argc)
     all->options.t = false;
     all->options.l = false;
     all->options.r = false;
+    all->run = true;
     all->info = NULL;
+    all->args = NULL;
     all->type = NULL;
+    all->dargs = NULL;
     ft_init_2d(all, argc);
     all->i = 0;
     all->x = 0;
     all->px = 0;
+    all->total = 0;
 }
 
 t_info  *ft_create_node(t_env *all, t_info *info, char *path, char *name)//struct dirent *file)//so i changed this so i dont hvae to pass file from ft_check_paths!
@@ -85,10 +89,9 @@ t_info  *ft_create_node(t_env *all, t_info *info, char *path, char *name)//struc
     t_info *cur;
     struct stat     *data;
 
-    printf("here in create node\n");
     data = (struct stat *)malloc(sizeof(struct stat));
     new = (t_info *)malloc(sizeof(t_info));
-    new->name = ft_strdup(name);//(file->d_name);//remember that if it hits check paths then the path will be name/name essetially
+    new->name = ft_strdup(name);
     new->path = ft_strdup(path);
     ft_stat_color(data, new);
     new->time = data->st_mtimespec;  
@@ -105,7 +108,5 @@ t_info  *ft_create_node(t_env *all, t_info *info, char *path, char *name)//struc
         cur->next = new;
         new->prev = cur;
     }
-    // free(data);
-    // printf("time of node = %s\n", ctime(&new->time.tv_sec));
     return (new);
 }

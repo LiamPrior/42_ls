@@ -6,22 +6,48 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/22 21:58:57 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/30 20:59:20 by lprior           ###   ########.fr       */
+/*   Updated: 2018/05/01 23:54:28 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
-//okay so i can print all the things 
 
 void printer(t_env *all, t_info *head)
+{
+    t_info *ptr;
+    char *temp;
+
+    ptr = head;
+    temp = ft_strdup(ptr->path);
+    if ((all->dargs->next || all->dargs->prev) && all->run == true)// !all->dargs->prev)
+        while(ptr->path[all->i])
+        {
+            if (ptr->path[all->i] == '/')
+                if (ptr->path[all->i + 1])
+                {
+                    temp[all->i] = '\0';
+                    ft_printf("%s:\n", temp);
+                    all->run = false;
+                }
+            all->i++;
+        }
+        free(temp);
+    while (ptr)
+    {
+        ft_printf("%s%s%s\n", ptr->color, ptr->name, NORMAL);
+        ptr = all->options.r ? ptr->prev : ptr->next;
+    }
+}
+
+void ft_get_total(t_env *all, t_info *head)
 {
     t_info *ptr;
 
     ptr = head;
     while (ptr)
     {
-        ft_printf("%s%s%s\n", ptr->color, ptr->name, NORMAL);
-        ptr = all->options.r ? ptr->prev : ptr->next;
+        all->total += ptr->data->st_blocks;
+        ptr = ptr->next;
     }
 }
 
@@ -30,7 +56,11 @@ void    ft_print_long(t_env *all, t_info *head)//i need to get total memory bloc
     char *perms;
     struct group *grp;
     struct passwd *usr;
+    char *link;
 
+    ft_get_total(all, head);
+    ft_printf("total %d\n", all->total);
+    all->total = 0;
     while (head)
     {
         perms = ft_strnew(1);
@@ -42,12 +72,21 @@ void    ft_print_long(t_env *all, t_info *head)//i need to get total memory bloc
         ft_printf("%s ", grp->gr_name);
         ft_printf("%6d ", head->data->st_size);
         ft_print_time(head);
-        ft_printf("%s%s%s\n", head->color, head->name, NORMAL);
+        if (S_ISLNK(head->data->st_mode))//put this in its own function
+        {
+            link = ft_strnew(ft_strlen(head->path) + 1);
+            readlink(head->path, link, 1024);
+            ft_printf("%s%s%s", head->color, head->name, NORMAL);
+            ft_printf(" -> ");
+            ft_printf("%s\n", link);
+        }
+        else
+            ft_printf("%s%s%s\n", head->color, head->name, NORMAL);
         head = all->options.r == true ? head->prev : head->next;
     }
 }
 
-void ft_recursive_print(t_env *all, t_info *head)
+void ft_recursive_print(t_env *all, t_info *head)//okay this isnt going to work because libft isnt a node so it just puts all other file args in through merge list with the rest because the others arnt in a sub liist i cahnged a few things!
 {
     t_info *ptr;
 
@@ -55,7 +94,7 @@ void ft_recursive_print(t_env *all, t_info *head)
     all->options.l == true ? ft_print_long(all, ptr) : printer(all, ptr);
     while (ptr && all->options.R == true)
     {
-        if (S_ISDIR(ptr->data->st_mode))
+        if (S_ISDIR(ptr->data->st_mode))// && all->run == false)
         {
             ft_printf("\n%s:\n", ptr->path);//////////////////////////////////////
             if (ptr->sub != NULL)
@@ -68,11 +107,21 @@ void ft_recursive_print(t_env *all, t_info *head)
 void    ft_display(t_env *all, t_info *head)
 {
     t_info *ptr;
-
+ 
+    
     ptr = head;
-    ptr = all->options.r == true ? ft_goto_end(all, ptr) : ptr;
-    if (all->options.R == true)
-        ft_recursive_print(all, ptr);//may need to add if statement for -R
-    if (all->options.l == true)//gonna not even have this later!
+    // printer(all, ptr);
+    // ptr = all->options.r == true ? ft_goto_end(all, ptr) : ptr;
+    // all->options.r == true ? ft_goto_end(all, ptr) : ;
+    if (all->options.r == true)
+        ptr = ft_goto_end(all, ptr);
+    if (all->options.R == false && all->options.l == false)
+        printer(all, ptr);
+    else if (all->options.R == true)
+        ft_recursive_print(all, ptr);
+    else if (all->options.l == true)
         ft_print_long(all, ptr);
+    //may need to add if statement for -R
+    // if (all->options.l == true)//gonna not even have this later!
+    //     ft_print_long(all, ptr);
 }
