@@ -1,7 +1,7 @@
 uint8_t is eqivalent to an unsigned char caps at 255.
 first i neeed to parse the options they pass in. : -l: &longlist, -R: &recursive, -a &all, -r: reverse, and -t, &modtime!
 
-ls -l, show hiden file/dir. include permission, amount of files, who created it, when it was made, the size of the dir/file, munth day time, then thte dir/file name!
+ls -l, include permission, amount of links, who created it, owner group, the size of the dir/file, munth day time, then thte dir/file name!
 
 ls -R: shows everything in perent dir like ls, then leaves one gap and traverses through alphanumerically, shows dir like ./dir/file: (dir content) then everything in tha
 dir then leaves another gap and continues down its path until no more dirs ande ther it recurses back to the dir that had two dirs in it. continues this process.
@@ -152,3 +152,62 @@ struct stat {
     time_t    st_mtime;   /* time of last modification */
     time_t    st_ctime;   /* time of last status change */
 };
+
+// -a is already done because i just need to print it.
+// -t i just need to print it as well.
+// -l i will need to print it weird.
+// -R i will just need to to seporate, print the direcotry path follow by :, and use normal print and switch to -l if needed, unless -r in which case i will need to go to the end and print backwards through all sub links;
+// -r i will need to go to the end of every sub array and and then go backwards.
+//
+//
+------------------------------getgrgid--getpwuid------------------------------------
+// getgrgid: #include <grp.h>
+// getgrgid: struct group *getgrgid(gid_t gid);
+// getgrgid: function shall search the group database for an entry with a matching gid.
+// getgrgid: shall return a pointer to a struct group
+struct group {
+    char   *gr_name The name of the group. 
+    gid_t   gr_gid  Numerical group ID. 
+    char  **gr_mem  Pointer to a null-terminated array of character pointers to member names. 
+}
+
+
+// getpwuid: #include <pwd.h>
+// getpwuid: struct passwd *getpwuid(uid_t uid);
+// getpwuid: function shall search the user database for an entry with a matching uid.
+// getpwuid:shall return a pointer to a struct passwd
+struct passwd {
+    char    *pw_name   User's login name. 
+    uid_t    pw_uid    Numerical user ID. 
+    gid_t    pw_gid    Numerical group ID. 
+    char    *pw_dir    Initial working directory. 
+    char    *pw_shell  Program to use as shell.
+}
+------------------- ls -l -----------------------
+-rwxrw-r--    1    root   root 2048    Jan 13 07:11 afile.exe
+file permissions,
+number of links,
+owner name,
+owner group,
+file size,
+time of last modification, and
+file/directory name
+--------------------permission_bits--------------
+// (special, User, Group, Other)
+// (-,---,---,---)
+// r: read
+// w: write
+// e: execute
+
+
+    b     Block special file.
+    c     Character special file.
+    d     Directory.
+    l     Symbolic link.
+    s     Socket link.
+    p     FIFO.
+    -     Regular file.
+//////////////////////////////////////////////
+i still have to handle link files.
+i still have to do -r.
+i still have alot ot do.
