@@ -6,20 +6,20 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/22 21:58:57 by lprior            #+#    #+#             */
-/*   Updated: 2018/05/01 23:54:28 by lprior           ###   ########.fr       */
+/*   Updated: 2018/05/03 21:16:51 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void printer(t_env *all, t_info *head)
+void ft_print_path(t_env *all, t_info *head)
 {
     t_info *ptr;
     char *temp;
 
     ptr = head;
     temp = ft_strdup(ptr->path);
-    if ((all->dargs->next || all->dargs->prev) && all->run == true)// !all->dargs->prev)
+    if (all->dargs && (all->dargs->next || all->dargs->prev || all->args) && all->run == true )// !all->dargs->prev)
         while(ptr->path[all->i])
         {
             if (ptr->path[all->i] == '/')
@@ -31,10 +31,34 @@ void printer(t_env *all, t_info *head)
                 }
             all->i++;
         }
-        free(temp);
+    free(temp);
+}
+
+void printer(t_env *all, t_info *head)
+{
+    t_info *ptr;
+    char *temp;
+
+    ptr = head;
+    temp = ft_strdup(ptr->path);
+    if (all->dargs && (all->dargs->next || all->dargs->prev || all->args) && all->run == true )// !all->dargs->prev)
+        while(ptr->path[all->i])
+        {
+            if (ptr->path[all->i] == '/')
+                if (ptr->path[all->i + 1])
+                {
+                    temp[all->i] = '\0';
+                    ft_printf("%s:\n", temp);
+                    all->run = false;
+                }
+            all->i++;
+        }
+    free(temp);
     while (ptr)
     {
-        ft_printf("%s%s%s\n", ptr->color, ptr->name, NORMAL);
+        ft_printf("%s%s%s", ptr->color, ptr->name, NORMAL);
+        // if (all->args == NULL)
+            ft_printf("\n");
         ptr = all->options.r ? ptr->prev : ptr->next;
     }
 }
@@ -58,8 +82,10 @@ void    ft_print_long(t_env *all, t_info *head)//i need to get total memory bloc
     struct passwd *usr;
     char *link;
 
+    ft_print_path(all, head);//okay i added this because when i pass in dir and file args it doesnt show the path of the first dir
     ft_get_total(all, head);
-    ft_printf("total %d\n", all->total);
+    if (all->tot == true)
+        ft_printf("total %d\n", all->total);
     all->total = 0;
     while (head)
     {
@@ -94,16 +120,30 @@ void ft_recursive_print(t_env *all, t_info *head)//okay this isnt going to work 
     all->options.l == true ? ft_print_long(all, ptr) : printer(all, ptr);
     while (ptr && all->options.R == true)
     {
-        if (S_ISDIR(ptr->data->st_mode))// && all->run == false)
+        // printf("in while loop [%s]\n", ptr->name);
+        // printf("HERe\n");
+        if (S_ISDIR(ptr->data->st_mode) && ft_strcmp(".", ptr->name) && ft_strcmp("..", ptr->name))// && all->run == false)
         {
+
             ft_printf("\n%s:\n", ptr->path);//////////////////////////////////////
             if (ptr->sub != NULL)
+            {
+                // printf("recursing[%s]\n", ptr->name);
                 ft_recursive_print(all, ptr->sub);
+            }
         }
+        // printf("about to move[%s][%s]\n", ptr->name, ptr->next->name);
         ptr = all->options.r == true ? ptr->prev : ptr->next;
     }
 }
+//stop liam
 
+
+
+
+
+
+//stop now ese
 void    ft_display(t_env *all, t_info *head)
 {
     t_info *ptr;
@@ -115,6 +155,7 @@ void    ft_display(t_env *all, t_info *head)
     // all->options.r == true ? ft_goto_end(all, ptr) : ;
     if (all->options.r == true)
         ptr = ft_goto_end(all, ptr);
+    // printf("\n\ngang[%s]\n\n", ptr->name);
     if (all->options.R == false && all->options.l == false)
         printer(all, ptr);
     else if (all->options.R == true)

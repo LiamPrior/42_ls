@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:38:34 by lprior            #+#    #+#             */
-/*   Updated: 2018/05/01 23:33:04 by lprior           ###   ########.fr       */
+/*   Updated: 2018/05/03 21:10:21 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ typedef struct  s_env
     char        **paths;
     char        *type;
     bool        run;
+    bool        tot;
+    bool        run2;
     int         total;//may not neede this
     int         px;
     int         x;
