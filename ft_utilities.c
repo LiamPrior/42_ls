@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/25 13:10:51 by lprior            #+#    #+#             */
-/*   Updated: 2018/05/03 10:24:59 by lprior           ###   ########.fr       */
+/*   Updated: 2018/05/04 22:01:53 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ t_info    *ft_init_merge(t_env *all, t_info *head)
 
 void    ft_stat_color(struct stat *data, t_info *new)
 {
-
     lstat(new->path, data);
     new->data = data;
     if (S_ISDIR(data->st_mode))
@@ -64,10 +63,17 @@ t_info *ft_split(t_info *head)
 void    ft_error(int i, char *str)
 {
     if (i == 0)
-        ft_printf("ls: USAGE ./ft_ls (-R)(-a)(-t)(-l)(-r)!\n");
+    {
+        ft_printf("ls: illegal option -- %s\nusage: ls ./ft_ls (-R)(-a)(-t)(-l)(-r)!\n", str);
+        exit (0);
+    }
     else if (i == 1)
-        ft_printf("ls: %s: No such file or directory\n", str);
-    exit(0);
+        ft_printf("ls: [%s]\n: No such file or directory\n", str);
+    else if (i == 2)
+    {
+        ft_printf("ls: %s: Permission denied\n", str);//this needs to be fixed
+        // exit (0);
+    }
 }
 
 int     ft_get_time(t_info *first, t_info *second)

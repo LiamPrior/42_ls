@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:38:34 by lprior            #+#    #+#             */
-/*   Updated: 2018/05/03 21:10:21 by lprior           ###   ########.fr       */
+/*   Updated: 2018/05/04 16:52:36 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ void    ft_error(int i, char *str);
 void    ft_init(t_env *all, int argc);
 void    ft_parse_paths(int argc, char **argv, t_env *all);
 t_info  *ft_ls(t_env *all, char *path, t_info *info);
-// t_info  *ft_create_node(t_env *all, t_info *info, char *path, struct dirent *file);
 t_info  *ft_create_node(t_env *all, t_info *info, char *path, char *name);
 DIR     *ft_type(t_env *all, DIR *type, char *path);
 t_info *ft_merge_sort(t_env *all, t_info *head);
@@ -87,7 +86,9 @@ t_info    *ft_init_merge(t_env *all, t_info *head);
 void    ft_get_perms(t_info *haed, char *perms);
 void ft_print_time(t_info *head);
 t_info *ft_goto_end(t_env *all, t_info *ptr);
-// void ft_goto_end(t_env *all, t_info *ptr);
 void    printer(t_env *all, t_info *head);
-
+void ft_check_file(t_env *all, struct stat *info);
+void ft_make_files(t_env *all);
+void ft_print_info(char *perms, t_info *head, struct passwd *usr, struct group *grp);
+void ft_print_path(t_env *all, t_info *head);
 #endif

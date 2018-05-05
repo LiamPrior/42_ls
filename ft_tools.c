@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/17 13:29:55 by psprawka          #+#    #+#             */
-/*   Updated: 2018/05/03 21:13:24 by lprior           ###   ########.fr       */
+/*   Updated: 2018/05/04 21:03:16 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,12 @@ void    ft_init(t_env *all, int argc)
     all->options.t = false;
     all->options.l = false;
     all->options.r = false;
+    all->tot = true;
     all->run = true;
     all->info = NULL;
     all->args = NULL;
     all->type = NULL;
     all->dargs = NULL;
-    all->tot = true;
     ft_init_2d(all, argc);
     all->i = 0;
     all->x = 0;
@@ -109,6 +109,6 @@ t_info  *ft_create_node(t_env *all, t_info *info, char *path, char *name)//struc
         cur->next = new;
         new->prev = cur;
     }
-    // printf("all names = [%s]\n", new->name);
+    // free(data);
     return (new);
 }
