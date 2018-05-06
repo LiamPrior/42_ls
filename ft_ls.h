@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:38:34 by lprior            #+#    #+#             */
-/*   Updated: 2018/05/04 16:52:36 by lprior           ###   ########.fr       */
+/*   Updated: 2018/05/05 19:17:35 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,18 @@
 # include <pwd.h>
 # include <stdbool.h>
 # include <time.h>
+
+# define IFa all->options.a
+# define IFR all->options.R
+# define IFr all->options.r
+# define IFl all->options.l
+# define IFt all->options.t
+# define DATA info->data->st_mode
+# define PERMS (S_IRGRP & DATA) && (S_IROTH & DATA) && (S_IWUSR & DATA)
+# define DOTCMP ft_strncmp(file->d_name, "..", 3)
+# define NOTDOT (ft_strncmp(file->d_name, ".", 1) != 0)
+# define ISDOT strcmp(file->d_name, ".")
+# define DRPERMS S_ISDIR(DATA) && IFR && (S_IRUSR & DATA) && PERMS
 
 typedef struct  s_options
 {
@@ -58,6 +70,7 @@ typedef struct  s_env
     t_options   options;
     char        **paths;
     char        *type;
+    char        *temp;
     bool        run;
     bool        tot;
     bool        run2;
@@ -91,4 +104,7 @@ void ft_check_file(t_env *all, struct stat *info);
 void ft_make_files(t_env *all);
 void ft_print_info(char *perms, t_info *head, struct passwd *usr, struct group *grp);
 void ft_print_path(t_env *all, t_info *head);
+void ft_free_lists(t_env *all);
+t_info *ft_free_info(t_env *all, t_info *head);
+
 #endif

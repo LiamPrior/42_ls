@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/22 21:58:57 by lprior            #+#    #+#             */
-/*   Updated: 2018/05/04 21:14:21 by lprior           ###   ########.fr       */
+/*   Updated: 2018/05/05 23:11:46 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ void ft_print_path(t_env *all, t_info *head)
 
     ptr = head;
     temp = ft_strdup(ptr->path);
-    if (all->dargs && (all->dargs->next || all->dargs->prev || all->args) && all->run == true )
+    if (all->dargs && (all->dargs->next || all->dargs->prev || all->args)
+         && all->run == true )
         while(ptr->path[all->i])
         {
             if (ptr->path[all->i] == '/')
@@ -87,11 +88,17 @@ void ft_recursive_print(t_env *all, t_info *head)
         && ft_strcmp("..", ptr->name))
         {
             ft_printf("\n%s:\n", ptr->path);
+            if (!(S_IRUSR & ptr->data->st_mode))
+                printf("ft_ls %s: Permission denied\n", ptr->name);
             if (ptr->sub != NULL)
                 ft_recursive_print(all, ptr->sub);
         }
+        free(ptr->name);
+        // free(ptr->data);
+        // free(ptr->sub);
         ptr = all->options.r == true ? ptr->prev : ptr->next;
     }
+    // while (1);
 }
 
 void    ft_display(t_env *all, t_info *head)

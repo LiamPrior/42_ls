@@ -6,41 +6,62 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:37:47 by lprior            #+#    #+#             */
-/*   Updated: 2018/05/04 21:33:25 by lprior           ###   ########.fr       */
+/*   Updated: 2018/05/05 23:11:54 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-t_info  *ft_ls(t_env *all, char *path, t_info *info)//oaky so iys failing to open refs in git for some reason.
+t_info  *ft_ls(t_env *all, char *path, t_info *info)//send path as heap alsways. initial is sent as stack
 {
     DIR             *type;
     struct dirent   *file;
-
-    printf("[%s]\n", path);
+    
     if ((type = opendir(path)) == NULL)
+    {
         ft_error(2, path);
+        return NULL;
+    }
     while ((file = readdir(type)))
     {
-        all->type = ft_strdup(path);
         all->type = ft_strjoin2(path, file->d_name);
-        if ((ft_strncmp(file->d_name, ".", 1) == 0 && all->options.a == true)
-            || (ft_strncmp(file->d_name, ".", 1) != 0))
-                info = ft_create_node(all, info, all->type, file->d_name);
+        // free(all->type);
+        if ((ft_strncmp(file->d_name, ".", 1) == 0 && IFa == true) || NOTDOT)
+            info = ft_create_node(all, info, all->type, file->d_name);
         else
             continue;
-        if (S_ISDIR(info->data->st_mode) && all->options.R == true 
-            && ((all->options.a == false && ft_strncmp(file->d_name, ".", 1) != 0)
-                 || (all->options.a && ft_strncmp(file->d_name, "..", 3) && strcmp(file->d_name, "."))))// && strcmp(file->d_name, ".."))))//dont need the last one most likely
-                info->sub = ft_ls(all, all->type, info->sub);
+            // if (i++ == 1)
+            //     while(1);
+        // free(info->path);
+        // free(info->name);
+        // free(all->type);
+        // printf("before recurse info[%p]\ninfo->sub[%p]\ninfo->name[%p]\ninfo->path[%p]\ninfo->color[%p]\npath[%p]\ntype[%p]\nfile->d_name[%p]\n", info, info->sub, info->name, info->path, info->color, path, type, file->d_name);
+        // sleep (5);
+        if (DRPERMS && ((!IFa && NOTDOT) || (IFa && DOTCMP && ISDOT)))
+            info->sub = ft_ls(all, all->type, info->sub);
         else if (info)
             info->sub = NULL;
         // free(all->type);
+        // printf("after recurse\n");
+        // sleep (5);   
+            // if (all->type)
+            //     free(all->type);
+        // free(all->type);//i need to free something in info struct
+        // free(info->sub);
+        // free(info->next);
+        // free(info->prev);
+        // free(info->name);//
+        // free(info->path);//
+        // free(info->color);//
+        // free(info->data);
+        // free(info);
+        // printf("here\n");
+        // sleep (5);
     }
-    // free(path);
     closedir(type);
     while (info && info->prev != NULL)
         info = info->prev;
+        // sleep(10);
     return (info);
 }
 
@@ -131,15 +152,21 @@ int     main(int argc, char **argv)
         all.dargs = ft_goto_end(&all, all.dargs);
     while (all.dargs)
     {
-        all.info = ft_ls(&all, all.dargs->name, all.info);
+        if (!(all.info = ft_ls(&all, all.dargs->name, all.info)))
+        {
+            all.dargs = all.options.r ? all.dargs->prev : all.dargs->next;
+            continue ;
+        }
         all.info = ft_init_merge(&all, all.info);
         ft_display(&all, all.info);
         if (all.dargs->next || (all.dargs->prev && all.options.r))
             write(1, "\n", 1);
         all.run = true;
+        free(all.dargs);
         all.dargs = all.options.r ? all.dargs->prev : all.dargs->next;
         all.info = NULL;
     }
-    // ft_free_lists(&all);
+    ft_free_lists(&all);
+    // sleep(10);
     return (0);
 }

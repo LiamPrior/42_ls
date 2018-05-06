@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/30 18:10:50 by lprior            #+#    #+#             */
-/*   Updated: 2018/05/04 21:43:47 by lprior           ###   ########.fr       */
+/*   Updated: 2018/05/05 15:07:30 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ void    ft_print_info(char *perms, t_info *head, struct passwd *usr, struct grou
 void ft_check_file(t_env *all, struct stat *info)
 {
     if (ft_strcmp(all->paths[all->px], ".") != 0)
-            lstat(all->paths[all->px], info);
-    if (!S_ISDIR(info->st_mode) && !S_ISREG(info->st_mode) 
+        lstat(all->paths[all->px], info);
+    if (lstat(all->paths[all->px], info) || (!S_ISDIR(info->st_mode) && !S_ISREG(info->st_mode) 
     && !S_ISCHR(info->st_mode) && !S_ISBLK(info->st_mode) 
         && !S_ISFIFO(info->st_mode) && !S_ISLNK(info->st_mode)
-            && !S_ISSOCK(info->st_mode) && ft_strcmp(all->paths[all->px], "."))
+            && !S_ISSOCK(info->st_mode) && ft_strcmp(all->paths[all->px], ".")))
             {
                 ft_error(1, all->paths[all->px]);
                 all->paths[all->px] = NULL;

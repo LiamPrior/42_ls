@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/25 13:10:51 by lprior            #+#    #+#             */
-/*   Updated: 2018/05/04 22:01:53 by lprior           ###   ########.fr       */
+/*   Updated: 2018/05/05 15:10:40 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,10 @@ void    ft_error(int i, char *str)
         exit (0);
     }
     else if (i == 1)
-        ft_printf("ls: [%s]\n: No such file or directory\n", str);
+        ft_printf("ls: %s: No such file or directory\n", str);
     else if (i == 2)
     {
-        ft_printf("ls: %s: Permission denied\n", str);//this needs to be fixed
-        // exit (0);
+        ft_printf("ls: %s: Permission denied\n", str);
     }
 }
 

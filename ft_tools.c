@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/17 13:29:55 by psprawka          #+#    #+#             */
-/*   Updated: 2018/05/04 21:03:16 by lprior           ###   ########.fr       */
+/*   Updated: 2018/05/05 23:06:42 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ void    ft_init(t_env *all, int argc)
     all->x = 0;
     all->px = 0;
     all->total = 0;
+    all->temp = NULL;
 }
 
 t_info  *ft_create_node(t_env *all, t_info *info, char *path, char *name)//struct dirent *file)//so i changed this so i dont hvae to pass file from ft_check_paths!
@@ -95,7 +96,8 @@ t_info  *ft_create_node(t_env *all, t_info *info, char *path, char *name)//struc
     new->name = ft_strdup(name);
     new->path = ft_strdup(path);
     ft_stat_color(data, new);
-    new->time = data->st_mtimespec;  
+    memcpy(&(new->time), &(data->st_mtimespec), sizeof(struct timespec));
+    // new->time = data->st_mtimespec;  
     new->next = NULL;
     new->sub = NULL;
     new->prev = NULL;
@@ -109,6 +111,8 @@ t_info  *ft_create_node(t_env *all, t_info *info, char *path, char *name)//struc
         cur->next = new;
         new->prev = cur;
     }
+    // free(name);
     // free(data);
+    // free(path);
     return (new);
 }
