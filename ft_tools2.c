@@ -1,25 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcat.c                                        :+:      :+:    :+:   */
+/*   ft_tools2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/19 12:13:23 by lprior            #+#    #+#             */
-/*   Updated: 2018/04/29 11:17:20 by lprior           ###   ########.fr       */
+/*   Created: 2018/05/06 18:02:04 by lprior            #+#    #+#             */
+/*   Updated: 2018/05/06 20:02:56 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_ls.h"
 
-char	*ft_strcat(char *s1, const char *s2)
+void	ft_operate(t_env *all, t_info *temp)
 {
-	int x;
-
-	x = ft_strlen(s1);
-	while (*s2 != '\0')
-		s1[x++] = *s2++;
-	s1[x] = '\0';
-	// printf("im in str[%s]\n", s1);
-	return (s1);
+	all->info = ft_init_merge(all, all->info);
+	ft_display(all, all->info);
+	if (temp->next || (temp->prev && all->options.r))
+		write(1, "\n", 1);
+	all->run = true;
 }
