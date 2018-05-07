@@ -6,7 +6,7 @@
 /*   By: lprior <lprior@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 18:37:47 by lprior            #+#    #+#             */
-/*   Updated: 2018/05/06 19:09:58 by lprior           ###   ########.fr       */
+/*   Updated: 2018/05/06 22:16:01 by lprior           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,5 @@ int			main(int argc, char **argv)
 		ft_operate(&all, temp);
 		temp = all.options.r ? temp->prev : temp->next;
 	}
-	// ft_free_lists(&all);
 	return (0);
 }
